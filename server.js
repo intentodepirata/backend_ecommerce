@@ -53,6 +53,11 @@ const marcaRoutes = require('./src/routes/marca.routes')
 // using as middleware 
 app.use('/api/v1/marca', marcaRoutes);
 
+// Require comentario routes
+const comentarioRoutes = require('./src/routes/comentario.routes')
+// using as middleware 
+app.use('/api/v1/comentario', comentarioRoutes);
+
 // Require modelo routes
 const modeloRoutes = require('./src/routes/modelo.routes')
 // using as middleware s

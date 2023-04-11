@@ -148,7 +148,7 @@ exports.update = function (req, res) {
   } else {
     Usuario.update(
       req.params.id,
-      new usuario(req.body),
+      new Usuario(req.body),
       function (err, usuario) {
         if (err) res.send(err);
         res.json({
