@@ -19,14 +19,15 @@ exports.register = function (req, res) {
   const { nombre, apellidos, email, password } = req.body;
 
   if (!nombre || !apellidos || !email || !password) {
-  //Comprobamos que no venga vacio
-  if (
-    (req.body.constructor === Object && Object.keys(req.body).length === 0) ||
-    Object.entries("")
-  ) {
-    res
-      .status(400)
-      .send({ error: true, message: "Todos los campos son obligatorios" });
+    //Comprobamos que no venga vacio
+    if (
+      (req.body.constructor === Object && Object.keys(req.body).length === 0) ||
+      Object.entries("")
+    ) {
+      res
+        .status(400)
+        .send({ error: true, message: "Todos los campos son obligatorios" });
+    }
   }
 
   //Comprobamos que no venga vacio
