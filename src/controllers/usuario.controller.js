@@ -18,15 +18,12 @@ exports.register = function (req, res) {
   const new_usuario = new Usuario(req.body);
   const { nombre, apellidos, email, password } = req.body;
 
-<<<<<<< HEAD
   if (!nombre || !apellidos || !email || !password) {
-=======
   //Comprobamos que no venga vacio
   if (
     (req.body.constructor === Object && Object.keys(req.body).length === 0) ||
     Object.entries("")
   ) {
->>>>>>> c6bdc619ee216c28406de7f3396641f5300e9e55
     res
       .status(400)
       .send({ error: true, message: "Todos los campos son obligatorios" });
