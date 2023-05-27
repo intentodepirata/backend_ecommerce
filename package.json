@@ -18,7 +18,10 @@
     "express-myconnection": "^1.0.4",
     "express-session": "^1.17.3",
     "jsonwebtoken": "^9.0.0",
+<<<<<<< HEAD
     "moment": "^2.29.4",
+=======
+>>>>>>> c6bdc619ee216c28406de7f3396641f5300e9e55
     "morgan": "^1.10.0",
     "multer": "^1.4.5-lts.1",
     "mysql2": "^3.2.0",
