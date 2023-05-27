@@ -16,13 +16,16 @@ exports.findAll = function (req, res) {
 
 exports.register = function (req, res) {
   const new_usuario = new Usuario(req.body);
+  const { nombre, apellidos, email, password } = req.body;
 
-  //Comprobamos que no venga vacio
-  if (req.body.constructor === Object && Object.keys(req.body).length === 0) {
+  if (!nombre || !apellidos || !email || !password) {
     res
       .status(400)
       .send({ error: true, message: "Todos los campos son obligatorios" });
-  } else {
+  }
+
+  //Comprobamos que no venga vacio
+  else {
     // Comprobamos que el email no exista
     Usuario.findByEmail(new_usuario.email, function (err, result) {
       if (err) {
@@ -31,12 +34,10 @@ exports.register = function (req, res) {
           .status(500)
           .send({ error: true, message: "Error interno del servidor" });
       } else if (result) {
-        res
-          .status(409)
-          .send({
-            error: true,
-            message: "El correo electrónico ya está en uso",
-          });
+        res.status(409).send({
+          error: true,
+          message: "El correo electrónico ya está en uso",
+        });
       } else {
         // Hasheamos el password antes de guardarlo en la base de datos
         bcrypt.hash(new_usuario.password, saltRounds, function (err, hash) {
@@ -73,67 +74,66 @@ exports.login = function (req, res) {
   const { email, password } = req.body;
 
   if (!email || !password) {
-    return res
-      .status(400)
-      .send({
-        error: true,
-        message: "Por favor ingrese su correo electrónico y contraseña",
-      });
+    return res.status(400).send({
+      error: true,
+      message: "Por favor ingrese su correo electrónico y contraseña",
+    });
   }
 
   Usuario.findByEmail(email, function (err, usuario) {
     if (err) {
-      return res
-        .status(500)
-        .send({
-          error: true,
-          message: "Ocurrió un error al buscar el usuario en la base de datos",
-        });
+      return res.status(500).send({
+        error: true,
+        message: "Ocurrió un error al buscar el usuario en la base de datos",
+      });
     }
 
     if (!usuario) {
-      return res
-        .status(404)
-        .send({
-          error: true,
-          message:
-            "No se encontró el usuario con el correo electrónico proporcionado",
-        });
+      return res.status(404).send({
+        error: true,
+        message:
+          "No se encontró el usuario con el correo electrónico proporcionado",
+      });
     }
 
     bcrypt.compare(password, usuario.password, function (err, result) {
       if (err) {
-        return res
-          .status(500)
-          .send({
-            error: true,
-            message: "Ocurrió un error al comparar las contraseñas",
-          });
+        return res.status(500).send({
+          error: true,
+          message: "Ocurrió un error al comparar las contraseñas",
+        });
       }
 
       if (!result) {
-        return res
-          .status(401)
-          .send({
-            error: true,
-            message: "La contraseña ingresada es incorrecta",
-          });
+        return res.status(401).send({
+          error: true,
+          message: "La contraseña ingresada es incorrecta",
+        });
       }
 
-      const token = jwt.sign({ id: usuario.id }, process.env.JWT_SECRET_KEY, {
-        expiresIn: "4h",
-      });
+      const token = jwt.sign(
+        {
+          id: usuario.id,
+          nombre: usuario.nombre,
+          email: usuario.email,
+          admin: usuario.admin,
+        },
+        process.env.JWT_SECRET_KEY,
+        {
+          expiresIn: "4h",
+        }
+      );
 
       res.json({
         error: false,
         message: "Inicio de sesión exitoso",
-        token,
         usuario: {
           id: usuario.id,
           nombre: usuario.nombre,
           apellidos: usuario.apellidos,
           email: usuario.email,
           admin: usuario.admin,
+          token,
         },
       });
     });
